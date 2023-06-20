@@ -1,3 +1,5 @@
+import { createSlice } from '@reduxjs/toolkit';
+
 export const CATEGORIES = [
   'housing',
   'food',
@@ -14,12 +16,17 @@ const initialState = CATEGORIES.map((category) => ({
   amount: 0,
 }));
 
-export const editBudget = (budget) => {
-  return {
-    type: 'budgets/editBudget',
-    payload: budget,
-  };
-};
+const budgetsSlice = createSlice({
+  name: 'budgets',
+  initialState: initialState,
+  reducers: {
+    editBudget: (state, action) => {
+      const { category, amount } = action.payload;
+      const budgetToEdit = state.find((budget) => budget.category === category);
+      budgetToEdit.amount = amount;
+    },
+  },
+});
 
 const budgetsReducer = (state = initialState, action) => {
   switch (action.type) {
@@ -35,6 +42,8 @@ const budgetsReducer = (state = initialState, action) => {
       return state;
   }
 };
+
+export const { editBudget } = budgetsSlice.actions;
 
 export const selectBudgets = (state) => state.budgets;
 export default budgetsReducer;
